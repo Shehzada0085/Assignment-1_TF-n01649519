@@ -1,0 +1,6 @@
+# defaults file for user-n01649519
+users:
+  - user100
+  - user200
+  - user300
+group_name: cloudadmins

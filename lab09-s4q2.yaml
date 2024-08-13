@@ -1,0 +1,37 @@
+---
+- name: Install packages based on / filesystem conditions
+  hosts: n01649519-c-vm2.canadacentral.cloudapp.azure.com
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Check if / filesystem is mounted
+      stat:
+        path: /
+      register: root_mount
+
+    - name: Check available disk space on / filesystem
+      command: df -BG /
+      register: df_output
+      changed_when: false
+
+    - name: Parse disk space available
+      set_fact:
+        # Extract the available space value and ensure it's an integer
+        disk_space: "{{ df_output.stdout_lines[1].split()[3] | regex_replace('G', '') | int }}"
+      when: root_mount.stat.exists
+
+    - name: Debug disk space value
+      debug:
+        msg: "Available disk space: {{ disk_space }} GB"
+
+    - name: Install packages if conditions are met
+      package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages }}"
+      when:
+        - root_mount.stat.exists
+        - disk_space is defined
+        - disk_space | int >= 2
+

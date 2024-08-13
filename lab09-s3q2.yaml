@@ -1,0 +1,14 @@
+---
+- name: Conditionally Extract and Show HumberID from Hostname
+  hosts: linux
+  gather_facts: no  
+
+  tasks:
+    - name: Extract HumberID from hostname
+      set_fact:
+        humberid: "{{ inventory_hostname.split('-')[0] }}"
+      
+    - name: Check if HumberID is valid
+      debug:
+        msg: "Node {{ inventory_hostname }} has HumberID: {{ humberid }}"
+      when: humberid | length > 0 and humberid is match('^[a-zA-Z0-9]+$')

@@ -1,0 +1,12 @@
+---
+- name: Conditional Package Installation
+  hosts: n01649519-c-vm1.canadacentral.cloudapp.azure.com
+  vars:
+    install_nmap: yes  # Define this variable to control the installation of nmap
+
+  tasks:
+    - name: Install nmap package
+      dnf:
+        name: nmap
+        state: present
+      when: install_nmap | bool

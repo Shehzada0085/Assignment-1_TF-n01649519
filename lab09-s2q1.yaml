@@ -1,0 +1,15 @@
+---
+- name: Capture and display Ansible facts
+  hosts: n01649519-c-vm1.canadacentral.cloudapp.azure.com
+  gather_facts: yes
+  tasks:
+    - name: Display all facts
+      debug:
+        var: ansible_facts
+
+    - name: Display FQDN, IPv4 address, and short hostname
+      debug:
+        msg: |
+          Fully Qualified Domain Name (FQDN): {{ ansible_facts.fqdn }}
+          IPv4 Address: {{ ansible_facts.default_ipv4.address }}
+          Short Hostname: {{ ansible_facts.hostname }}

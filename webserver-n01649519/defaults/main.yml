@@ -1,0 +1,10 @@
+
+# defaults file for webserver-n01649519
+---
+nodes:
+  - name: n01649519-c-vm1
+    fqdn: n01649519-c-vm1.canadacentral.cloudapp.azure.com
+  - name: n01649519-c-vm2
+    fqdn: n01649519-c-vm2.canadacentral.cloudapp.azure.com
+  - name: n01649519-c-vm3
+    fqdn: n01649519-c-vm3.canadacentral.cloudapp.azure.com

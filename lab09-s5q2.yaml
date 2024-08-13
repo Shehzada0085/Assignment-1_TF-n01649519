@@ -1,0 +1,49 @@
+---
+- name: Install and configure Apache and MariaDB
+  hosts: n01649519-c-vm2.canadacentral.cloudapp.azure.com
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Install Apache web server
+      package:
+        name: httpd
+        state: present
+      notify:
+        - Start Apache
+
+    - name: Install MariaDB server
+      package:
+        name: mariadb-server
+        state: present
+      notify:
+        - Start MariaDB
+
+    - name: Ensure Apache service is enabled
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      notify:
+        - Start Apache
+
+    - name: Ensure MariaDB service is enabled
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+      notify:
+        - Start MariaDB
+
+  handlers:
+    - name: Start Apache
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Start MariaDB
+      service:
+        name: mariadb
+        state: started
+        enabled: yes

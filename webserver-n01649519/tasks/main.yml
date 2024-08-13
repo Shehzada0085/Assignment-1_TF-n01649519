@@ -1,0 +1,54 @@
+
+# tasks file for webserver-n01649519
+---
+- name: Install Apache web server
+  ansible.builtin.dnf:
+    name: httpd
+    state: present
+  become: true
+
+- name: Ensure Apache service is started
+  ansible.builtin.systemd:
+    name: httpd
+    state: started
+    enabled: yes
+  become: true
+  notify: restart apache
+
+- name: Create HTML files for each node
+  ansible.builtin.template:
+    src: "{{ item.name }}.html.j2"
+    dest: "/tmp/{{ item.name }}.html"
+  loop: "{{ nodes }}"
+  become: true
+
+- name: Copy HTML files to /var/www/html
+  ansible.builtin.copy:
+    src: "/tmp/{{ item.name }}.html"
+    dest: "/var/www/html/index.html"
+    mode: '0444'
+  loop: "{{ nodes }}"
+  become: true
+  notify: restart apache
+
+- name: Clean up temporary HTML files
+  ansible.builtin.file:
+    path: "/tmp/{{ item.name }}.html"
+    state: absent
+  loop: "{{ nodes }}"
+  become: true
+
+- name: Ensure /var/www/html directory has correct permissions
+  ansible.builtin.file:
+    path: /var/www/html
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Ensure Apache is enabled and started
+  ansible.builtin.systemd:
+    name: httpd
+    state: started
+    enabled: yes
+  become: true
+  notify: restart apache

@@ -1,0 +1,20 @@
+---
+- name: Apply roles to all Linux nodes
+  hosts: linux
+  gather_facts: yes
+  tasks:
+    - name: Apply roles to all Linux nodes
+      import_role:
+        name: profile-n01649519
+
+    - name: Apply user role
+      import_role:
+        name: user-n01649519
+
+    - name: Apply datadisk role
+      import_role:
+        name: datadisk-n01649519
+
+    - name: Apply webserver role
+      import_role:
+        name: webserver-n01649519

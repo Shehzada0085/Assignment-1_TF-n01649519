@@ -1,0 +1,30 @@
+---
+- name: Install and configure Apache web server
+  hosts: n01649519-c-vm1.canadacentral.cloudapp.azure.com
+
+  tasks:
+    - name: Install Apache web server
+      package:
+        name: httpd
+        state: present
+      notify: Reload Apache
+
+    - name: Add hostname to index.html
+      ansible.builtin.lineinfile:
+        path: /var/www/html/index.html
+        line: "Hostname: {{ ansible_hostname }}"
+        create: yes
+      notify: Reload Apache
+
+    - name: Ensure Apache service is enabled
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      notify: Reload Apache
+
+  handlers:
+    - name: Reload Apache
+      service:
+        name: httpd
+        state: reloaded

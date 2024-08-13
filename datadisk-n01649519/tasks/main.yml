@@ -1,0 +1,37 @@
+
+# tasks file for datadisk-n01649519
+---
+- name: Create partitions on the disk
+  ansible.builtin.command:
+    cmd: "parted {{ disk }} mklabel gpt && parted {{ disk }} mkpart primary {{ item.size }} {{ item.size }}"
+  loop: "{{ partitions }}"
+
+- name: Ensure partitions are formatted
+  ansible.builtin.filesystem:
+    fstype: "{{ item.fstype }}"
+    dev: "{{ disk }}{{ loop.index }}"
+  loop: "{{ partitions }}"
+
+- name: Ensure mount points are created
+  ansible.builtin.file:
+    path: "{{ item.mount }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ partitions }}"
+
+- name: Mount partitions
+  ansible.builtin.mount:
+    path: "{{ item.mount }}"
+    src: "{{ disk }}{{ loop.index }}"
+    fstype: "{{ item.fstype }}"
+    state: mounted
+    opts: defaults
+  loop: "{{ partitions }}"
+  become: true
+
+- name: Ensure partitions are mounted persistently
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    line: "{{ disk }}{{ loop.index }} {{ item.mount }} {{ item.fstype }} defaults 0 2"
+    state: present
+  loop: "{{ partitions }}"

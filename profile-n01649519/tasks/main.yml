@@ -1,0 +1,9 @@
+---
+# tasks file for profile-n01649619
+- name : Block of text on /etc/path
+  ansible.builtin.blockinfile:
+   path : /etc/profile
+   block: |
+    #Test block added by Ansible……{{ username }}
+    export TMOUT=1500
+   marker :  "# {mark} ANSIBLE MANAGED BLOCK"  

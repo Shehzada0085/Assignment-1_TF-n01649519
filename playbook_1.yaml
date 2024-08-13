@@ -1,0 +1,10 @@
+---
+- name: Install cifs-utils package using dnf module
+  hosts: linux
+
+  tasks:
+    - name: Install cifs-utils package
+      dnf:
+        name: cifs-utils
+        state: present
+

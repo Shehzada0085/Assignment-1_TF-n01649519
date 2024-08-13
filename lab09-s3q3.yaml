@@ -1,0 +1,19 @@
+- name: Conditionally Add String to File Based on RHEL and Kernel Version
+  hosts: linux
+  gather_facts: yes  # Gather system facts to check RHEL and kernel version
+
+  tasks:
+    - name: Ensure the /tmp/conditional file exists
+      file:
+        path: /tmp/conditional
+        state: touch
+    - name: Ensure RHEL version and kernel version match criteria
+      block:
+        - name: Add string to /tmp/conditional file
+          blockinfile:
+            path: /tmp/conditional
+            block: |
+              This is my RedHat Linux VM
+          when: ansible_facts['distribution'] == 'RedHat' and
+                ansible_facts['distribution_version'] == '9.4' and
+                ansible_facts['kernel'] == '5.14.0-427.13.1.el9_4.x86_64'

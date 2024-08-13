@@ -1,0 +1,21 @@
+---
+- name: Install and display packages
+  hosts: n01649519-c-vm2.canadacentral.cloudapp.azure.com
+
+  tasks:
+    - name: Install specified packages
+      package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ packages }}"
+      register: pkg_installation
+
+    - name: Display the entire task output
+      debug:
+        var: pkg_installation
+
+    - name: Display the names of the packages that were installed
+      debug:
+        msg: "Installed package: {{ item.name }}"
+      loop: "{{ pkg_installation.results }}"
+      when: item.changed

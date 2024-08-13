@@ -1,0 +1,11 @@
+---
+- name: Create multiple user accounts with custom UIDs
+  hosts: linux
+
+  tasks:
+    - name: Create user accounts with custom UIDs
+      user:
+        name: "{{ item.name }}"
+        uid: "{{ item.uid }}"
+        state: present
+      loop: "{{ users }}"

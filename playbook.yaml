@@ -1,0 +1,15 @@
+---
+- name: Enable WinRM on Windows machines
+  hosts: windows
+  vars:
+    ansible_user: n01649519
+    ansible_password: "Shehz@9519"
+    ansible_connection: winrm
+    ansible_winrm_transport: ntlm
+    ansible_winrm_server_cert_validation: ignore
+  tasks:
+    - name: Set execution policy
+      win_shell: Set-ExecutionPolicy RemoteSigned -Force
+
+    - name: Enable PSRemoting
+      win_shell: Enable-PSRemoting -Force
